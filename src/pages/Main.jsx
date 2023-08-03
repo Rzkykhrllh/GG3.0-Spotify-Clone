@@ -41,6 +41,9 @@ function Main() {
       setSpotifyToken(_spotifyToken);
       spotify.setAccessToken(_spotifyToken);
 
+      // to local storage
+      localStorage.setItem('access_token', _spotifyToken);
+
       spotify.getMe().then(user => {
         console.log(`Im the`, user);
       });
