@@ -8,33 +8,43 @@ import {
   Code,
   Grid,
   theme,
+  GridItem,
 } from '@chakra-ui/react';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { Logo } from './Logo';
 
+import './App.css';
+import HomeAndSearch from './components/HomeAndSearch';
+import FavSong from './components/FavSong/FavSong';
+
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
-      </Box>
+      <Grid
+        templateAreas={`"header main"
+                  "nav main"
+                  "footer footer"`}
+        gridTemplateRows={'max-content 1fr 30px'}
+        gridTemplateColumns={'25% 1fr'}
+        h="100vh"
+        gap="3"
+        color="white"
+        fontWeight="bold"
+        bg="black"
+      >
+        <GridItem ml="3" mt="3" area={'header'} bg="gray.700" borderRadius={4}>
+          <HomeAndSearch />
+        </GridItem>
+        <GridItem ml="3" bg="gray.700" borderRadius={4} area={'nav'}>
+          <FavSong />
+        </GridItem>
+        <GridItem pl="2" bg="gray.700" borderRadius={4} area={'main'}>
+          Main
+        </GridItem>
+        <GridItem pl="2" bg="gray.700" borderRadius={4} area={'footer'}>
+          Footer
+        </GridItem>
+      </Grid>
     </ChakraProvider>
   );
 }
