@@ -6,14 +6,16 @@ const data = [
   {
     text: 'Home',
     icon: '',
+    isHome: true,
   },
   {
     text: 'Search',
     icon: 'SearchIcon',
+    isHome: false,
   },
 ];
 
-function HomeAndSearch() {
+function HomeAndSearch({ setIsHome }) {
   return (
     <div>
       {data.map((item, index) => (
@@ -25,6 +27,7 @@ function HomeAndSearch() {
           bg="transparent"
           leftIcon={<Icon as={item.icon} />}
           _hover={{ bg: 'green.400' }}
+          onClick={() => setIsHome(item.isHome)}
         >
           {item.text}
         </Button>
