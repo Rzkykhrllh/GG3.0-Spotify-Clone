@@ -16,6 +16,7 @@ import { Logo } from './Logo';
 import './App.css';
 import HomeAndSearch from './components/HomeAndSearch';
 import FavSong from './components/FavSong/FavSong';
+import MainContent from './components/MainContent/MainContent';
 
 function App() {
   return (
@@ -38,8 +39,15 @@ function App() {
         <GridItem ml="3" bg="gray.700" borderRadius={4} area={'nav'}>
           <FavSong />
         </GridItem>
-        <GridItem pl="2" bg="gray.700" borderRadius={4} area={'main'}>
-          Main
+        <GridItem
+          pl="2"
+          mt="3"
+          mr="3"
+          bg="gray.700"
+          borderRadius={4}
+          area={'main'}
+        >
+          <MainContent />
         </GridItem>
         <GridItem pl="2" bg="gray.700" borderRadius={4} area={'footer'}>
           Footer
