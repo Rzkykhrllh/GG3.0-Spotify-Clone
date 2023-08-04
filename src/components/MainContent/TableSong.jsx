@@ -49,7 +49,9 @@ function TableSong({ songs }) {
                 />
               </td>
               <td>
-                <Text fontWeight="normal">{song.album}</Text>
+                <Text fontWeight="normal" noOfLines={2}>
+                  {song.album}
+                </Text>
               </td>
               <td>
                 <Text fontWeight="normal">{song.duration}</Text>

@@ -1,10 +1,69 @@
-import { Box, Heading } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  ScrollView,
+} from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import TableSong from './TableSong';
 import axios from 'axios';
 
 function Home() {
-  const [songs, setSongs] = useState([]);
+  const [recomendationSongs, setrecomendationSongs] = useState([]);
+  const [topSongs, setTopSongs] = useState([]);
+
+  const getUserTopTracks = async access_token => {
+    try {
+      const url = 'https://api.spotify.com/v1/me/top/tracks';
+      const response = await axios.get(url, {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      const row_songs = response.data.items;
+      console.log(row_songs);
+
+      const formatted_topSongs = row_songs.map(track => ({
+        title: track.name,
+        duration: track.duration_ms,
+        artist: track.artists[0].name,
+        album: track.album.name,
+        thumbnail: track.album.images[0]?.url,
+      }));
+
+      setTopSongs(formatted_topSongs);
+
+      const seed_tracks = row_songs.slice(0, 5).map(track => track.id);
+
+      return seed_tracks;
+    } catch (error) {
+      console.error(error.response.data);
+      return null;
+    }
+  };
+
+  const getRecommendations = async (access_token, formatted_seed) => {
+    try {
+      const url = `https://api.spotify.com/v1/recommendations?&seed_tracks=${formatted_seed}`;
+      const response = await axios.get(url, {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      return response.data.tracks;
+    } catch (error) {
+      console.error(error.response.data);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,7 +86,7 @@ function Home() {
             thumbnail: track.album.images[0]?.url,
           }));
 
-          setSongs(formatted_recomendation);
+          setrecomendationSongs(formatted_recomendation);
         }
       } catch (error) {
         // Handle the error here if needed
@@ -39,49 +98,24 @@ function Home() {
   }, []);
 
   return (
-    <Box p="3" overflowY="auto" maxH="100%">
-      <Heading as="h1" size="md" mb="4">
-        All the song
-      </Heading>
-      <TableSong songs={songs} />
+    <Box p="3" overflowY="auto" maxHeight="100%">
+      <Tabs isFitted variant="enclosed">
+        <TabList mb="1em">
+          <Tab>Static</Tab>
+          <Tab>For You!</Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            <TableSong songs={topSongs} />
+          </TabPanel>
+          <TabPanel>
+            <TableSong songs={recomendationSongs} />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Box>
   );
 }
 
 export default Home;
-
-const getUserTopTracks = async access_token => {
-  try {
-    const url = 'https://api.spotify.com/v1/me/top/tracks';
-    const response = await axios.get(url, {
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
-
-    const row_songs = response.data.items;
-    const seed_tracks = row_songs.slice(0, 5).map(track => track.id);
-    return seed_tracks;
-  } catch (error) {
-    console.error(error.response.data);
-    return null;
-  }
-};
-
-const getRecommendations = async (access_token, formatted_seed) => {
-  try {
-    const url = `https://api.spotify.com/v1/recommendations?&seed_tracks=${formatted_seed}`;
-    const response = await axios.get(url, {
-      headers: {
-        Accept: 'application/json, text/plain, */*',
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
-
-    return response.data.tracks;
-  } catch (error) {
-    console.error(error.response.data);
-    return [];
-  }
-};
